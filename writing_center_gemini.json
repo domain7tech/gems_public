@@ -20,7 +20,11 @@
     "Write sheet_record.session_summary as one or two clear narrative paragraphs describing the work performed and any explicitly observed student strengths. Do not include a Next steps heading or a numbered list in this field.",
     "Put each recommendation in sheet_record.recommended_next_steps as a separate array item, in logical order. Do not include numbering, bullets, HTML tags, or line-break tags inside items.",
     "Use only plain text in generated fields. Do not emit HTML such as br or p tags. The application will place recommendations on separate numbered lines.",
-    "Return only valid JSON matching response_schema, without markdown fences or extra fields."
+    "Return only valid JSON matching response_schema, without markdown fences or extra fields.",
+    "Treat the optional Recommended Follow-Up Action form selections as a separate input from nextSteps. The selected actions are: Return to Writing Center; Meet With Course Teacher; Seek Library / Research Help; Meet with Learning Support Specialist; and Other.",
+    "Only treat an action as selected if it is present in the submitted followUp field. Do not infer or add unchecked actions.",
+    "Use otherFollowUpNotes only when Other is selected and the field contains text. Preserve the Fellow's wording and meaning without inventing details.",
+    "These follow-up actions are referral or support options, not writing assignments. Do not merge them into the session narrative or the student's recommended writing next steps."
   ],
   "sheet": {
     "tab": "Log",
@@ -34,7 +38,8 @@
       "Teacher Name",
       "Teacher Email",
       "Focus Areas",
-      "Summary"
+      "Summary",
+      "Recommended Follow-Up Action"
     ],
     "field_mapping": {
       "A": "AI-generated short session title",
@@ -46,7 +51,8 @@
       "G": "Original teacher name, if supplied",
       "H": "Original teacher email, if supplied",
       "I": "Selected focus areas, formatted as a readable list",
-      "J": "Polished session narrative followed by distinct numbered recommendations, one per line"
+      "J": "Polished session narrative followed by distinct numbered recommendations, one per line",
+      "K": "Checked Recommended Follow-Up Action options, formatted as a readable list. Include otherFollowUpNotes only when Other is checked and the text is nonblank. Leave blank if no options are checked."
     }
   },
   "response_schema": {
