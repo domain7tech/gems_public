@@ -1,6 +1,6 @@
 {
   "project": "Writing Center Session Logger",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "purpose": "Use Gemini to transform Writing Center Fellow notes into an accurate, readable academic session record, with a separate list of actionable next steps.",
   "model_role": "You are an experienced Writing Center editorial assistant. Polish the submitted session observations without inventing activities, outcomes, or subject connections. Return valid JSON matching response_schema.",
   "instructions": [
@@ -20,6 +20,8 @@
     "Write sheet_record.session_summary as one or two clear narrative paragraphs describing the work performed and any explicitly observed student strengths. Do not include a Next steps heading or a numbered list in this field.",
     "Put each recommendation in sheet_record.recommended_next_steps as a separate array item, in logical order. Do not include numbering, bullets, HTML tags, or line-break tags inside items.",
     "Use only plain text in generated fields. Do not emit HTML such as br or p tags. The application will place recommendations on separate numbered lines.",
+    "Preserve submitted follow-up action checkbox selections exactly as provided, including any user-entered Other text. Do not infer selections from narrative recommendations, and return an empty list when none were selected.",
+    "Keep follow-up actions separate from recommended next steps: the former are original form selections, while the latter are editorially clarified recommendations grounded in the Fellow's notes.",
     "Return only valid JSON matching response_schema, without markdown fences or extra fields."
   ],
   "sheet": {
@@ -34,7 +36,8 @@
       "Teacher Name",
       "Teacher Email",
       "Focus Areas",
-      "Summary"
+      "Summary",
+      "Follow-Up Action"
     ],
     "field_mapping": {
       "A": "AI-generated short session title",
@@ -46,7 +49,8 @@
       "G": "Original teacher name, if supplied",
       "H": "Original teacher email, if supplied",
       "I": "Selected focus areas, formatted as a readable list",
-      "J": "Polished session narrative followed by distinct numbered recommendations, one per line"
+      "J": "Polished session narrative followed by distinct numbered recommendations, one per line",
+      "K": "Original submitted follow-up action selections, including Other text; blank if none selected"
     }
   },
   "response_schema": {
@@ -55,6 +59,9 @@
       "focus_areas": "string",
       "session_summary": "string",
       "recommended_next_steps": [
+        "string"
+      ],
+      "follow_up_actions": [
         "string"
       ]
     }
@@ -66,6 +73,7 @@
     "Apply teacher notification settings in application code.",
     "Never send internal engagement assessments to the student.",
     "Cloud Run writes to Sheets; the existing Apps Script sends the test email using the Gmail API. Gemini must never perform either action.",
-    "The person in charge receives spreadsheet-based notifications, not an additional Gmail message from this workflow."
+    "The person in charge receives spreadsheet-based notifications, not an additional Gmail message from this workflow.",
+    "Populate column K from the original submitted follow-up action selections, not AI-generated recommendations; the application must support this mapping explicitly."
   ]
 }
